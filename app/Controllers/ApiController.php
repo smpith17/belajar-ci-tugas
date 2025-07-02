@@ -62,4 +62,20 @@ class ApiController extends ResourceController
 
     return $this->respond($data);
 }
+
+public function jumlah_item()
+{
+    $id = $this->request->getGet('id');
+
+    $db = \Config\Database::connect();
+    $builder = $db->table('transaction_detail');
+    $builder->selectSum('jumlah');
+    $builder->where('transaction_id', $id);
+    $query = $builder->get()->getRow();
+
+    return $this->response->setJSON([
+        'jumlah' => $query->jumlah ?? 0
+    ]);
+}
+
 }

@@ -54,6 +54,17 @@ class AuthController extends BaseController
         }
     }
 
+    $diskonModel = new \App\Models\DiskonModel();
+$today = date('Y-m-d');
+$diskon = $diskonModel->where('tanggal', $today)->first();
+
+if ($diskon) {
+    session()->set('diskon', $diskon['nominal']);
+} else {
+    session()->remove('diskon');
+}
+
+
     return view('v_login');
 }
 

@@ -20,6 +20,18 @@ $routes->group('produk', ['filter' => 'auth'], function ($routes) {
     $routes->get('download', 'ProdukController::download');
 });
 
+$routes->group('diskon', ['filter' => 'auth'], function ($routes) {
+    $routes->get('', 'DiskonController::index');              // List diskon
+    $routes->get('create', 'DiskonController::create');       // Form tambah
+    $routes->post('store', 'DiskonController::store');        // Simpan tambah
+    $routes->get('edit/(:num)', 'DiskonController::edit/$1'); // Form edit
+    $routes->post('update/(:num)', 'DiskonController::update/$1'); // Simpan edit
+    $routes->get('delete/(:num)', 'DiskonController::delete/$1');  // Hapus
+});
+
+$routes->get('api/jumlah-item', 'ApiController::jumlah_item');
+
+
 $routes->group('keranjang', ['filter' => 'auth'], function ($routes) {
     $routes->get('', 'TransaksiController::index');
     $routes->post('', 'TransaksiController::cart_add');
@@ -48,3 +60,4 @@ $routes->get('faq', 'Home::faq', ['filter' => 'auth']);
 $routes->get('contact', 'Home::contact', ['filter' => 'auth']);
 
 $routes->resource('api', ['controller' => 'apiController']);
+

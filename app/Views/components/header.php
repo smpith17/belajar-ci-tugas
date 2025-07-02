@@ -15,7 +15,12 @@
             <button type="submit" title="Search"><i class="bi bi-search"></i></button>
         </form>
     </div><!-- End Search Bar -->
-
+<?php if (session()->has('diskon')): ?>
+        <div class="badge bg-success text-white px-3 py-2" style="font-size: 14px;">
+            Hari ini ada diskon <?= number_format(session('diskon'), 0, ',', '.') ?> per item
+        </div>
+    <?php endif; ?>
+    
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
 

@@ -32,17 +32,32 @@ class TransaksiController extends BaseController
     }
 
     public function cart_add()
-    {
-        $this->cart->insert(array(
-            'id'        => $this->request->getPost('id'),
-            'qty'       => 1,
-            'price'     => $this->request->getPost('harga'),
-            'name'      => $this->request->getPost('nama'),
-            'options'   => array('foto' => $this->request->getPost('foto'))
-        ));
-        session()->setflashdata('success', 'Produk berhasil ditambahkan ke keranjang. (<a href="' . base_url() . 'keranjang">Lihat</a>)');
-        return redirect()->to(base_url('/'));
-    }
+{
+    // Ambil data dari form
+    $id     = $this->request->getPost('id');
+    $nama   = $this->request->getPost('nama');
+    $harga  = $this->request->getPost('harga');
+    $foto   = $this->request->getPost('foto');
+
+    // Ambil diskon dari session (default 0)
+    $diskon = session()->get('diskon') ?? 0;
+
+    // Hitung harga setelah dikurangi diskon (minimal 0)
+    $hargaSetelahDiskon = max(0, $harga - $diskon);
+
+    // Masukkan ke keranjang
+    $this->cart->insert([
+        'id'      => $id,
+        'qty'     => 1,
+        'price'   => $hargaSetelahDiskon,
+        'name'    => $nama,
+        'options' => ['foto' => $foto]
+    ]);
+
+    session()->setFlashdata('success', 'Produk berhasil ditambahkan ke keranjang. (<a href="' . base_url() . 'keranjang">Lihat</a>)');
+    return redirect()->to(base_url('/'));
+}
+
 
     public function cart_clear()
     {
@@ -152,16 +167,18 @@ public function buy()
         ];
 
         $this->transaction->insert($dataForm);
-
         $last_insert_id = $this->transaction->getInsertID();
+
+        // Ambil diskon dari session (default 0)
+        $diskon = session()->get('diskon') ?? 0;
 
         foreach ($this->cart->contents() as $value) {
             $dataFormDetail = [
                 'transaction_id' => $last_insert_id,
                 'product_id' => $value['id'],
                 'jumlah' => $value['qty'],
-                'diskon' => 0,
-                'subtotal_harga' => $value['qty'] * $value['price'],
+                'diskon' => $diskon, // simpan diskon
+                'subtotal_harga' => $value['qty'] * $value['price'], // harga sudah didiskon
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s")
             ];
@@ -170,8 +187,9 @@ public function buy()
         }
 
         $this->cart->destroy();
- 
+
         return redirect()->to(base_url());
     }
 }
+
 }
