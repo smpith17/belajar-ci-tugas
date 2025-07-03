@@ -39,7 +39,8 @@ class AuthController extends BaseController
                         'isLoggedIn' => TRUE
                     ]);
 
-                    return redirect()->to(base_url('/'));
+                    return redirect()->to(base_url('/')); // ✅ Sama saja, lebih aman
+
                 } else {
                     session()->setFlashdata('failed', 'Kombinasi Username & Password Salah');
                     return redirect()->back();
