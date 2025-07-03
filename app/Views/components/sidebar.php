@@ -46,12 +46,14 @@
             </a>
         </li> <!-- End Profile Nav -->
 
+         <?php if (session()->get('role') === 'admin') : ?>
         <li class="nav-item">
             <a class="nav-link <?php echo (uri_string() == 'kategori') ? "" : "collapsed" ?>" href="kategori">
                 <i class="bi bi-journal-text"></i>
                 <span>Kategori Produk</span>
             </a>
         </li> <!-- End Kategori Nav -->
+            <?php endif; ?>
 
         <li class="nav-item">
             <a class="nav-link <?php echo (uri_string() == 'faq') ? "" : "collapsed" ?>" href="faq">
