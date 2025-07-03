@@ -29,12 +29,15 @@
         }
         ?>
 
-        <li class="nav-item">
-            <a class="nav-link <?php echo (uri_string() == 'diskon') ? "" : "collapsed" ?>" href="diskon">
-                <i class="bi bi-tags"></i>
-                <span>Diskon</span>
-            </a>
-        </li> <!-- End Profile Nav -->
+        <?php if (session()->get('role') === 'admin') : ?>
+<li class="nav-item">
+    <a class="nav-link collapsed" href="<?= base_url('diskon') ?>">
+        <i class="bi bi-tags"></i>
+        <span>Diskon</span>
+    </a>
+</li>
+<?php endif; ?>
+
 
         <li class="nav-item">
             <a class="nav-link <?php echo (uri_string() == 'profile') ? "" : "collapsed" ?>" href="profile">

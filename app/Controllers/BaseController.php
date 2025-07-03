@@ -8,17 +8,9 @@ use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use App\Models\DiskonModel;
+use CodeIgniter\I18n\Time; // ✅ penting!
 
-/**
- * Class BaseController
- *
- * BaseController provides a convenient place for loading components
- * and performing functions that are needed by all your controllers.
- * Extend this class in any new controllers:
- *     class Home extends BaseController
- *
- * For security be sure to declare any new methods as protected or private.
- */
 abstract class BaseController extends Controller
 {
     /**
@@ -35,24 +27,25 @@ abstract class BaseController extends Controller
      *
      * @var array
      */
-    protected $helpers = [];
-
-    /**
-     * Be sure to declare properties for any property fetch you initialized.
-     * The creation of dynamic property is deprecated in PHP 8.2.
-     */
-    // protected $session;
+    protected $helpers = ['form', 'url'];
 
     /**
      * @return void
      */
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
-        // Do Not Edit This Line
         parent::initController($request, $response, $logger);
 
-        // Preload any models, libraries, etc, here.
+        // ✅ Pakai Time bawaan CI4 dengan zona waktu Indonesia
+        $diskonModel = new DiskonModel();
+        $today = Time::now('Asia/Jakarta')->toDateString(); // contoh: 2025-07-03
 
-        // E.g.: $this->session = \Config\Services::session();
+        $diskon = $diskonModel->where('tanggal', $today)->first();
+
+        if ($diskon) {
+            session()->set('diskon', $diskon['nominal']);
+        } else {
+            session()->remove('diskon');
+        }
     }
 }
